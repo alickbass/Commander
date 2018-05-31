@@ -5,13 +5,13 @@
 #endif
 
 
-protocol ANSIConvertible : Error, CustomStringConvertible {
+public protocol ANSIConvertible : Error, CustomStringConvertible {
   var ansiDescription: String { get }
 }
 
 
 extension ANSIConvertible {
-  func print() {
+  public func print() {
     // Check if we are in any term env and the output is a tty.
     if ANSI.isTerminalSupported {
       fputs("\(ansiDescription)\n", stderr)
@@ -22,7 +22,7 @@ extension ANSIConvertible {
 }
 
 
-enum ANSI: UInt8, CustomStringConvertible {
+public enum ANSI: UInt8, CustomStringConvertible {
   case reset = 0
 
   case black = 30
@@ -35,11 +35,11 @@ enum ANSI: UInt8, CustomStringConvertible {
   case white
   case `default`
 
-  var description: String {
+  public var description: String {
     return "\u{001B}[\(self.rawValue)m"
   }
 
-  static var isTerminalSupported: Bool {
+  public static var isTerminalSupported: Bool {
     if let termType = getenv("TERM"), String(cString: termType).lowercased() != "dumb" &&
       isatty(fileno(stdout)) != 0 {
       return true
@@ -48,7 +48,7 @@ enum ANSI: UInt8, CustomStringConvertible {
     }
   }
 
-  func print(_ string: String, to output: UnsafeMutablePointer<FILE> = stdout) {
+  public func print(_ string: String, to output: UnsafeMutablePointer<FILE> = stdout) {
     if ANSI.isTerminalSupported {
       fputs("\(self)\(string)\(ANSI.reset)\n", output)
     } else {

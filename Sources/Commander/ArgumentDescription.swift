@@ -263,13 +263,13 @@ public class Flag : ArgumentDescriptor {
 }
 
 
-class BoxedArgumentDescriptor {
-  let name: String
-  let description: String?
-  let `default`: String?
-  let type: ArgumentType
+public class BoxedArgumentDescriptor {
+  public let name: String
+  public let description: String?
+  public let `default`: String?
+  public let type: ArgumentType
 
-  init<T : ArgumentDescriptor>(value: T) {
+  public init<T : ArgumentDescriptor>(value: T) {
     name = value.name
     description = value.description
     type = value.type
@@ -293,44 +293,44 @@ class BoxedArgumentDescriptor {
 }
 
 
-class UsageError : Error, ANSIConvertible, CustomStringConvertible {
-  let message: String
-  let help: Help
+public class UsageError : Error, ANSIConvertible, CustomStringConvertible {
+  public let message: String
+  public let help: Help
 
-  init(_ message: String, _ help: Help) {
+  public init(_ message: String, _ help: Help) {
     self.message = message
     self.help = help
   }
 
-  var description: String {
+  public var description: String {
     return [message, help.description].filter { !$0.isEmpty }.joined(separator: "\n\n")
   }
 
-  var ansiDescription: String {
+  public var ansiDescription: String {
     return [message, help.ansiDescription].filter { !$0.isEmpty }.joined(separator: "\n\n")
   }
 }
 
 
-class Help : Error, ANSIConvertible, CustomStringConvertible {
-  let command: String?
-  let group: Group?
-  let descriptors: [BoxedArgumentDescriptor]
+public class Help : Error, ANSIConvertible, CustomStringConvertible {
+  public let command: String?
+  public let group: Group?
+  public let descriptors: [BoxedArgumentDescriptor]
 
-  init(_ descriptors: [BoxedArgumentDescriptor], command: String? = nil, group: Group? = nil) {
+  public init(_ descriptors: [BoxedArgumentDescriptor], command: String? = nil, group: Group? = nil) {
     self.command = command
     self.group = group
     self.descriptors = descriptors
   }
 
-  func reraise(_ command: String? = nil) -> Help {
+  public func reraise(_ command: String? = nil) -> Help {
     if let oldCommand = self.command, let newCommand = command {
       return Help(descriptors, command: "\(newCommand) \(oldCommand)")
     }
     return Help(descriptors, command: command ?? self.command)
   }
 
-  var description: String {
+  public var description: String {
     var output = [String]()
 
     let arguments = descriptors.filter { $0.type == ArgumentType.argument }
@@ -392,7 +392,7 @@ class Help : Error, ANSIConvertible, CustomStringConvertible {
     return output.joined(separator: "\n")
   }
 
-  var ansiDescription: String {
+  public var ansiDescription: String {
     var output = [String]()
 
     let arguments = descriptors.filter { $0.type == ArgumentType.argument }
